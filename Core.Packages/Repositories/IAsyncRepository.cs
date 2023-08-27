@@ -42,13 +42,13 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity> where TE
 
     TEntity AddAsync(TEntity entity);
 
-    ICollection<TEntity> AddRangeAsync(ICollection<TEntity> entity);
+    ICollection<TEntity> AddRangeAsync(ICollection<TEntity> entities);
 
     TEntity UpdateAsync(TEntity entity);
 
-    ICollection<TEntity> UpdateRangeAsync(ICollection<TEntity> entity);
+    ICollection<TEntity> UpdateRangeAsync(ICollection<TEntity> entities);
 
     TEntity DeleteAsync(TEntity entity, bool permanent = false);
 
-    ICollection<TEntity> DeleteRangeAsync(ICollection<TEntity> entity, bool permanent = false);
+    ICollection<TEntity> DeleteRangeAsync(ICollection<TEntity> entities, bool permanent = false);
 }

@@ -1,6 +1,6 @@
 ﻿namespace Core.Packages.Repositories;
 
-public class Entity<TId>
+public class Entity<TId>:IEntityTimeStamps
 {
     public TId Id { get; set; }
     public DateTime CreatedDate { get; set; }
