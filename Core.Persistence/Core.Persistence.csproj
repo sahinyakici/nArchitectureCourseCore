@@ -4,12 +4,17 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Core.Packages</RootNamespace>
     </PropertyGroup>
 
 
     <ItemGroup>
         <PackageReference Include="EntityFrameworkCore.Query" Version="1.3.1.2"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.3.4" />
     </ItemGroup>
+
+
 
 
 </Project>
