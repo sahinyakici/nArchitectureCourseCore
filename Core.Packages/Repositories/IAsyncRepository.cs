@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Core.Packages.Dynamic;
 using Core.Packages.Paging;
 using Microsoft.EntityFrameworkCore.Query;
 
@@ -23,7 +24,7 @@ public interface IAsyncRepository<TEntity, TEntityId> : IQuery<TEntity> where TE
         CancellationToken cancellationToken = default);
 
     Paginate<TEntity> GetListByDynamic(
-        DynamicQuey dynamic,
+        DynamicQuery dynamic,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         int index = 0,
