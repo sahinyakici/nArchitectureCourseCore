@@ -2,6 +2,8 @@
 using System.Text.Json;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Core.Application.Pipelines.Caching;
 
@@ -10,11 +12,13 @@ public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
 {
     private readonly CacheSettings _cacheSettings;
     private readonly IDistributedCache _cache;
+    private readonly ILogger<CachingBehavior<TRequest, TResponse>> _logger;
 
-    public CachingBehavior(CacheSettings cacheSettings, IDistributedCache cache)
+    public CachingBehavior(IDistributedCache cache, ILogger<CachingBehavior<TRequest, TResponse>> logger,IConfiguration configuration)
     {
-        _cacheSettings = cacheSettings;
+        _cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>()??throw new InvalidOperationException();
         _cache = cache;
+        _logger = logger;
     }
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
@@ -30,6 +34,7 @@ public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         if (cacheResponse != null)
         {
             response = JsonSerializer.Deserialize<TResponse>(Encoding.Default.GetString(cacheResponse));
+            _logger.LogInformation($"Fetched from cache -> {request.CacheKey}");
         }
         else
         {
@@ -46,6 +51,7 @@ public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         DistributedCacheEntryOptions cacheEntryOptions = new() { SlidingExpiration = slidingExpration};
         byte[] serializedData = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response));
         await _cache.SetAsync(request.CacheKey, serializedData, cacheEntryOptions, cancellationToken);
+        _logger.LogInformation($"Add to cache -> {request.CacheKey}");
         return response;
     }
 }
